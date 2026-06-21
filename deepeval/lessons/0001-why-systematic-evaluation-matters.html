@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Why Systematic Evaluation Matters</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+    <h1>Why Systematic Evaluation Matters</h1>
+    
+    <div class="metaphor">
+        <div class="metaphor-title">The Restaurant Analogy</div>
+        <p>Imagine you're managing a restaurant. Your current approach to quality control is walking through the dining room and asking yourself: "Does the food look good?"</p>
+        
+        <p>That's intuitive evaluation. It might catch obvious disasters (burnt food, wrong orders), but it won't tell you:</p>
+        <ul>
+            <li>Are portions consistent across shifts?</li>
+            <li>Are ingredients measured precisely?</li>
+            <li>Is the recipe being followed correctly?</li>
+            <li>Which dishes cause the most returns?</li>
+        </ul>
+        
+        <p><strong>Systematic evaluation</strong> is like having measurement tools in your kitchen: thermometers, scales, timers, and customer feedback forms. You're no longer guessing — you're measuring.</p>
+    </div>
+
+    <h2>The Problem with "Does This Look Good?"</h2>
+    
+    <p>Your team built a RAG system that answers questions about container shipping operations. Currently, you're evaluating it by reading some outputs and thinking: "This seems right."</p>
+    
+    <p>Here's what you're missing:</p>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Intuitive Evaluation</th>
+                <th>Systematic Evaluation</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Subjective ("looks good")</td>
+                <td>Quantitative (scores 0-1)</td>
+            </tr>
+            <tr>
+                <td>Inconsistent across reviewers</td>
+                <td>Reproducible with metrics</td>
+            </tr>
+            <tr>
+                <td>Catches only obvious errors</td>
+                <td>Detects subtle issues (hallucinations, irrelevance)</td>
+            </tr>
+            <tr>
+                <td>Hard to track over time</td>
+                <td>Comparable across iterations</td>
+            </tr>
+            <tr>
+                <td>No visibility into components</td>
+                <td>Can isolate retrieval vs generation problems</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Why This Matters for Container Shipping</h2>
+    
+    <p>In your domain, <strong>wrong answers have real consequences</strong>:</p>
+    
+    <div class="danger">
+        <div class="danger-title">High-Stakes Scenarios</div>
+        <ul>
+            <li><strong>Hallucinated metrics:</strong> "Ship Atlas delivered 500 containers yesterday" when it actually delivered 350 → wrong inventory decisions</li>
+            <li><strong>Temporal confusion:</strong> Returning last week's fuel consumption when asked about yesterday → missed anomalies</li>
+            <li><strong>Wrong ship identification:</strong> Mixing up Ship Atlas with Ship Titan → operational chaos</li>
+            <li><strong>Retrieval failure:</strong> Missing the right PDF report → answering from outdated information</li>
+        </ul>
+    </div>
+    
+    <p>You can't catch these issues by eyeballing 10 responses. You need systematic evaluation that checks:</p>
+    <ul>
+        <li><strong>Faithfulness:</strong> Is the answer grounded in the actual PDF reports?</li>
+        <li><strong>Answer relevancy:</strong> Did we answer the right question?</li>
+        <li><strong>Contextual recall:</strong> Did we retrieve the correct documents?</li>
+        <li><strong>Hallucination detection:</strong> Did the LLM fabricate information?</li>
+    </ul>
+
+    <h2>What DeepEval Brings to the Table</h2>
+    
+    <p>DeepEval is a framework that gives you measurement tools for LLM applications. Think of it as <strong>pytest for AI systems</strong>.</p>
+    
+    <div class="callout">
+        <div class="callout-title">Key Insight</div>
+        <p>DeepEval doesn't just tell you "this is wrong." It gives you:</p>
+        <ol>
+            <li><strong>Quantitative scores (0-1)</strong> for each test case</li>
+            <li><strong>Explanations</strong> for why something passed or failed</li>
+            <li><strong>Reproducibility</strong> — run the same tests across code changes</li>
+            <li><strong>Component-level visibility</strong> — isolate where problems occur in your pipeline</li>
+        </ol>
+    </div>
+
+    <h3>The Three-Layer Evaluation Strategy</h3>
+    
+    <div class="diagram">
+        <svg viewBox="0 0 800 680" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%; height: auto;">
+            <defs>
+                <style>
+                    .layer-title { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-weight: 600; }
+                    .layer-subtitle { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+                    .content-text { font-family: 'SF Mono', 'Consolas', monospace; font-size: 13px; }
+                    .metric-text { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 13px; }
+                </style>
+                
+                <!-- Arrow marker -->
+                <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto">
+                    <polygon points="0 0, 10 5, 0 10" fill="#64748b" />
+                </marker>
+            </defs>
+            
+            <!-- Layer 1: End-to-End Evaluation -->
+            <g id="layer1">
+                <!-- Background card -->
+                <rect x="80" y="30" width="640" height="160" 
+                      fill="#eff6ff" stroke="#3b82f6" stroke-width="2" rx="12"/>
+                
+                <!-- Header -->
+                <text x="400" y="60" text-anchor="middle" class="layer-title" font-size="22" fill="#1e40af">
+                    1. End-to-End Evaluation
+                </text>
+                <text x="400" y="85" text-anchor="middle" class="layer-subtitle" font-size="15" fill="#3b82f6">
+                    Does the final output answer correctly?
+                </text>
+                
+                <!-- User query icon -->
+                <circle cx="110" cy="130" r="18" fill="#3b82f6" opacity="0.9"/>
+                <text x="110" y="137" text-anchor="middle" font-size="18" fill="white" font-weight="bold">Q</text>
+                
+                <!-- Input question -->
+                <text x="145" y="125" class="content-text" fill="#1f2937">
+                    Input: "How many containers did
+                </text>
+                <text x="145" y="143" class="content-text" fill="#1f2937">
+                    Atlas deliver yesterday?"
+                </text>
+                
+                <!-- Output -->
+                <text x="145" y="170" class="content-text" fill="#047857" font-weight="600">
+                    Output: "350 containers"
+                </text>
+                
+                <!-- Metrics -->
+                <g>
+                    <circle cx="500" cy="130" r="3" fill="#10b981"/>
+                    <text x="510" y="134" class="metric-text" fill="#047857">Answer Relevancy: 0.95</text>
+                </g>
+                <g>
+                    <circle cx="500" cy="155" r="3" fill="#10b981"/>
+                    <text x="510" y="159" class="metric-text" fill="#047857">Faithfulness: 0.92</text>
+                </g>
+            </g>
+            
+            <!-- Arrow 1 to 2 -->
+            <line x1="400" y1="200" x2="400" y2="240" 
+                  stroke="#64748b" stroke-width="2" marker-end="url(#arrowhead)"/>
+            
+            <!-- Layer 2: Retrieval Quality -->
+            <g id="layer2">
+                <!-- Background card -->
+                <rect x="80" y="250" width="640" height="160" 
+                      fill="#fffbeb" stroke="#f59e0b" stroke-width="2" rx="12"/>
+                
+                <!-- Header -->
+                <text x="400" y="280" text-anchor="middle" class="layer-title" font-size="22" fill="#92400e">
+                    2. Retrieval Quality Evaluation
+                </text>
+                <text x="400" y="305" text-anchor="middle" class="layer-subtitle" font-size="15" fill="#d97706">
+                    Did we retrieve the right documents?
+                </text>
+                
+                <!-- Database icon -->
+                <g>
+                    <rect x="95" y="333" width="30" height="8" fill="#f59e0b" rx="2" opacity="0.9"/>
+                    <rect x="95" y="343" width="30" height="8" fill="#f59e0b" rx="2" opacity="0.7"/>
+                    <rect x="95" y="353" width="30" height="8" fill="#f59e0b" rx="2" opacity="0.5"/>
+                </g>
+                
+                <!-- Retrieved documents -->
+                <text x="145" y="345" class="content-text" fill="#1f2937">
+                    Retrieved Documents:
+                </text>
+                <text x="145" y="365" class="content-text" fill="#1f2937">
+                    ["Ship Atlas Daily Report 2026-06-20"]
+                </text>
+                <text x="145" y="383" class="content-text" fill="#1f2937">
+                    ["Ship Titan Report...", "Atlas History..."]
+                </text>
+                
+                <!-- Metrics -->
+                <g>
+                    <circle cx="500" cy="350" r="3" fill="#10b981"/>
+                    <text x="510" y="354" class="metric-text" fill="#047857">Contextual Precision: 0.87</text>
+                </g>
+                <g>
+                    <circle cx="500" cy="375" r="3" fill="#10b981"/>
+                    <text x="510" y="379" class="metric-text" fill="#047857">Contextual Recall: 0.91</text>
+                </g>
+            </g>
+            
+            <!-- Arrow 2 to 3 -->
+            <line x1="400" y1="420" x2="400" y2="460" 
+                  stroke="#64748b" stroke-width="2" marker-end="url(#arrowhead)"/>
+            
+            <!-- Layer 3: Generation Quality -->
+            <g id="layer3">
+                <!-- Background card -->
+                <rect x="80" y="470" width="640" height="160" 
+                      fill="#f0fdf4" stroke="#10b981" stroke-width="2" rx="12"/>
+                
+                <!-- Header -->
+                <text x="400" y="500" text-anchor="middle" class="layer-title" font-size="22" fill="#065f46">
+                    3. Generation Quality Evaluation
+                </text>
+                <text x="400" y="525" text-anchor="middle" class="layer-subtitle" font-size="15" fill="#059669">
+                    Is the generation grounded and accurate?
+                </text>
+                
+                <!-- AI icon -->
+                <g>
+                    <circle cx="110" cy="570" r="20" fill="#10b981" opacity="0.9"/>
+                    <path d="M 105 565 L 110 570 L 105 575 M 110 565 L 115 570 L 110 575" 
+                          stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/>
+                </g>
+                
+                <!-- Context -->
+                <text x="145" y="560" class="content-text" fill="#1f2937">
+                    Context: "Ship Atlas delivered 350
+                </text>
+                <text x="145" y="578" class="content-text" fill="#1f2937">
+                    containers on 2026-06-20"
+                </text>
+                
+                <!-- Generated output -->
+                <text x="145" y="605" class="content-text" fill="#047857" font-weight="600">
+                    Generated: "350 containers"
+                </text>
+                
+                <!-- Metrics -->
+                <g>
+                    <circle cx="500" cy="585" r="3" fill="#10b981"/>
+                    <text x="510" y="589" class="metric-text" fill="#047857">Hallucination Score: 0.96</text>
+                </g>
+                <g>
+                    <text x="510" y="607" class="metric-text" fill="#6b7280" font-size="12">(Lower = fewer hallucinations)</text>
+                </g>
+            </g>
+            
+            <!-- Side annotations with lines -->
+            <g id="annotations">
+                <!-- Line to Layer 1 -->
+                <line x1="735" y1="110" x2="755" y2="110" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3,3"/>
+                <text x="765" y="110" class="metric-text" fill="#64748b" font-size="13">Black-box</text>
+                <text x="765" y="126" class="metric-text" fill="#64748b" font-size="13">testing</text>
+                
+                <!-- Line to Layer 2 -->
+                <line x1="735" y1="330" x2="755" y2="330" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3,3"/>
+                <text x="765" y="330" class="metric-text" fill="#64748b" font-size="13">Component</text>
+                <text x="765" y="346" class="metric-text" fill="#64748b" font-size="13">testing</text>
+                
+                <!-- Line to Layer 3 -->
+                <line x1="735" y1="550" x2="755" y2="550" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3,3"/>
+                <text x="765" y="550" class="metric-text" fill="#64748b" font-size="13">Component</text>
+                <text x="765" y="566" class="metric-text" fill="#64748b" font-size="13">testing</text>
+            </g>
+        </svg>
+    </div>
+
+    <p>DeepEval lets you evaluate at all three levels, helping you pinpoint exactly where problems occur. Think of it like troubleshooting a car: you can test the whole car (end-to-end), check if the fuel pump works (retrieval), or verify the engine combustion (generation).</p>
+
+    <h2>Your Path Forward</h2>
+    
+    <p>As a manager, you don't need to write the evaluation code yourself. But you need to understand:</p>
+    
+    <ol>
+        <li><strong>Which metrics matter</strong> for your container shipping use case</li>
+        <li><strong>How to interpret metric scores</strong> and their explanations</li>
+        <li><strong>What "good" looks like</strong> — setting appropriate thresholds</li>
+        <li><strong>When to dig deeper</strong> — spotting patterns in failures</li>
+        <li><strong>How to guide your team</strong> on evaluation strategy</li>
+    </ol>
+    
+    <div class="success">
+        <div class="success-title">Next Steps</div>
+        <p>In the next lesson, we'll dive into <strong>DeepEval's core concepts</strong>: test cases, metrics, and thresholds. You'll learn how to read and interpret evaluation results.</p>
+    </div>
+
+    <h2>Recommended Reading</h2>
+    
+    <ul>
+        <li><a href="https://docs.confident-ai.com/docs/getting-started" target="_blank">DeepEval Getting Started</a> — official introduction to the framework</li>
+        <li><a href="https://docs.confident-ai.com/docs/metrics-introduction" target="_blank">Metrics Introduction</a> — overview of evaluation metrics</li>
+    </ul>
+
+    <div class="footer">
+        <p><strong>Have questions?</strong> Ask your agent anytime — I'm here to clarify concepts, provide examples, or adjust the lesson based on your needs.</p>
+        <p><em>Lesson 1 of the DeepEval series</em></p>
+    </div>
+
+    <div class="navigation">
+        <span>← Previous: Getting Started</span>
+        <a href="0002-core-concepts.html" class="nav-link">Next: Core Concepts →</a>
+    </div>
+</body>
+</html>
